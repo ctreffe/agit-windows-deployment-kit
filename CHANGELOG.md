@@ -1,9 +1,9 @@
 ﻿# Changelog
 
-## [0.7.0]
+## [0.9.0]
 
 ### Added
 
-- Added Explorer and shell defaults.
-- Added Microsoft, privacy and security modules.
-- Added deployment validation.
+- Added release candidate documentation.
+- Added project philosophy.
+- Improved README structure for public use.
