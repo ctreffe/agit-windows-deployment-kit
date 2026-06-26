@@ -1,7 +1,9 @@
 ﻿# Changelog
 
-## [0.4.1]
+## [0.7.0]
 
-### Fixed
+### Added
 
-- Improved PowerShell compatibility and script encoding.
+- Added Explorer and shell defaults.
+- Added Microsoft, privacy and security modules.
+- Added deployment validation.
