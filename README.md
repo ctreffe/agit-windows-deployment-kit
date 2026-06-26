@@ -11,4 +11,6 @@ This repository intentionally starts small and grows in focused steps. The proje
 
 ## Current scope
 
-The project now includes the Windows `$OEM$` deployment path. Files placed below this path are copied to the installed system during Windows Setup.
+The deployment now creates a temporary `Setup` account and prepares the handoff to the built-in Administrator account.
+
+The temporary account is only used for bootstrap purposes and is removed after the Administrator workflow completes.

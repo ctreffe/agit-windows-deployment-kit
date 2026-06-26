@@ -1,15 +1,92 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
-AGIT Deployment Kit
-Initial unattended Windows setup baseline.
+###############################################################################
+#
+# AGIT Deployment Kit
+#
+# Module      : autounattend.xml
+# Version     : 1.0.0
+# Windows     : Windows 11 Enterprise 25H2
+#
+# Author      : Christian Treffenstaedt
+# Copyright   : (c) 2026 Christian Treffenstaedt
+#
+# Description :
+# Automates Windows Setup and OOBE while deliberately keeping disk selection
+# manual for safety.
+#
+###############################################################################
 
-This file is intentionally minimal at this stage. Later commits add the
-Setup account bootstrap, Administrator handoff and detailed operational
-comments.
+===============================================================================
+IMPORTANT - REQUIRED PASSWORD REPLACEMENT
+===============================================================================
+
+Before copying this file to a Windows installation USB stick, replace BOTH
+occurrences of the following placeholder:
+
+    CHANGE_ME_SETUP_PASSWORD
+
+Why this is required:
+
+- Windows creates the temporary local "Setup" account during OOBE.
+- At that point PowerShell has not run yet, so the password cannot be read from
+  Config.ps1.
+- The same password is used for the first automatic logon as "Setup".
+- The "Setup" account is removed automatically after the built-in Administrator
+  has been enabled and configured.
+
+Security note:
+
+The Setup password is stored in clear text in this answer file. This is normal
+for this deployment approach, but the USB stick should be treated as sensitive
+media. Do not leave the placeholder unchanged for real deployments.
+
+===============================================================================
+SAFETY PRINCIPLE - NO AUTOMATIC DISK WIPE
+===============================================================================
+
+This answer file intentionally contains NO DiskConfiguration section.
+Windows Setup will therefore stop at the disk and partition selection screen.
+The technician must choose the target disk manually.
+
+This protects against accidental data loss on systems with multiple drives,
+external disks or preserved data partitions.
+
+===============================================================================
+DEPLOYMENT FLOW
+===============================================================================
+
+1. Windows Setup starts from the USB stick.
+2. Windows 11 Enterprise is selected automatically.
+3. Disk and partition selection remains manual.
+4. OOBE is automated.
+5. A temporary local administrator account named "Setup" is created.
+6. "Setup" logs on once and starts C:\Deployment\Scripts\FirstBoot.ps1.
+7. FirstBoot enables and configures the built-in Administrator account.
+8. The temporary Setup account is removed.
+9. The system restarts and continues with the Administrator workflow.
+
+###############################################################################
 -->
-<unattend xmlns="urn:schemas-microsoft-com:unattend" xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State">
+<unattend xmlns="urn:schemas-microsoft-com:unattend"
+          xmlns:wcm="http://schemas.microsoft.com/WMIConfig/2002/State"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <!--
+  ============================================================================
+  windowsPE pass
+  ============================================================================
+
+  This pass runs in Windows Setup before the installed Windows image boots.
+  It is used here for early language settings, automatic Enterprise image
+  selection and EULA acceptance.
+  -->
   <settings pass="windowsPE">
-    <component name="Microsoft-Windows-International-Core-WinPE" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+    <component name="Microsoft-Windows-International-Core-WinPE"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
       <SetupUILanguage>
         <UILanguage>de-DE</UILanguage>
       </SetupUILanguage>
@@ -18,7 +95,17 @@ comments.
       <UILanguage>de-DE</UILanguage>
       <UserLocale>de-DE</UserLocale>
     </component>
-    <component name="Microsoft-Windows-Setup" processorArchitecture="amd64" publicKeyToken="31bf3856ad364e35" language="neutral" versionScope="nonSxS">
+
+    <component name="Microsoft-Windows-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <!--
+      Select the Enterprise image from the multi-edition Volume Licensing ISO.
+      If the image name changes in a future ISO, this value may need to be
+      updated.
+      -->
       <ImageInstall>
         <OSImage>
           <InstallFrom>
@@ -27,11 +114,128 @@ comments.
               <Value>Windows 11 Enterprise</Value>
             </MetaData>
           </InstallFrom>
+          <WillShowUI>OnError</WillShowUI>
         </OSImage>
       </ImageInstall>
+
+      <!-- Accepts the Windows license terms so Setup does not stop for EULA. -->
       <UserData>
         <AcceptEula>true</AcceptEula>
       </UserData>
+    </component>
+  </settings>
+
+  <!--
+  ============================================================================
+  specialize pass
+  ============================================================================
+
+  This pass runs after the Windows image has been applied. It sets basic machine
+  properties that are safe before any user logs on.
+  -->
+  <settings pass="specialize">
+    <component name="Microsoft-Windows-Shell-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <!-- Windows generates a unique computer name. Domain join happens later. -->
+      <ComputerName>*</ComputerName>
+
+      <!-- German/central European time zone. -->
+      <TimeZone>W. Europe Standard Time</TimeZone>
+    </component>
+  </settings>
+
+  <!--
+  ============================================================================
+  oobeSystem pass
+  ============================================================================
+
+  This pass automates the first-run OOBE experience. It creates the temporary
+  Setup account and starts the AGIT Deployment Kit bootstrap script.
+  -->
+  <settings pass="oobeSystem">
+    <component name="Microsoft-Windows-International-Core"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <InputLocale>de-DE</InputLocale>
+      <SystemLocale>de-DE</SystemLocale>
+      <UILanguage>de-DE</UILanguage>
+      <UserLocale>de-DE</UserLocale>
+    </component>
+
+    <component name="Microsoft-Windows-Shell-Setup"
+               processorArchitecture="amd64"
+               publicKeyToken="31bf3856ad364e35"
+               language="neutral"
+               versionScope="nonSxS">
+      <!--
+      OOBE settings are deliberately conservative: we skip unnecessary consumer
+      prompts and account screens, but do not disable security components.
+      -->
+      <OOBE>
+        <HideEULAPage>true</HideEULAPage>
+        <HideLocalAccountScreen>true</HideLocalAccountScreen>
+        <HideOEMRegistrationScreen>true</HideOEMRegistrationScreen>
+        <HideOnlineAccountScreens>true</HideOnlineAccountScreens>
+        <HideWirelessSetupInOOBE>true</HideWirelessSetupInOOBE>
+        <NetworkLocation>Work</NetworkLocation>
+        <ProtectYourPC>3</ProtectYourPC>
+      </OOBE>
+
+      <!--
+      Temporary bootstrap account.
+
+      This account exists only because Windows OOBE needs a user context for
+      FirstLogonCommands. It is a local administrator while it exists and is
+      removed by FirstBoot.ps1 after the built-in Administrator has been
+      configured.
+      -->
+      <UserAccounts>
+        <LocalAccounts>
+          <LocalAccount wcm:action="add">
+            <Name>Setup</Name>
+            <Group>Administrators</Group>
+            <DisplayName>Setup</DisplayName>
+            <Description>Temporary deployment bootstrap account. Removed automatically.</Description>
+            <Password>
+              <Value>CHANGE_ME_SETUP_PASSWORD</Value>
+              <PlainText>true</PlainText>
+            </Password>
+          </LocalAccount>
+        </LocalAccounts>
+      </UserAccounts>
+
+      <!--
+      One-time AutoLogon for the temporary Setup account.
+      This is required so FirstBoot.ps1 can run automatically without manual
+      interaction after OOBE has completed.
+      -->
+      <AutoLogon>
+        <Enabled>true</Enabled>
+        <Username>Setup</Username>
+        <LogonCount>1</LogonCount>
+        <Password>
+          <Value>CHANGE_ME_SETUP_PASSWORD</Value>
+          <PlainText>true</PlainText>
+        </Password>
+      </AutoLogon>
+
+      <!--
+      Bootstrap entry point.
+      The files are copied to C:\Deployment by the $OEM$ folder structure on the
+      USB stick. FirstBoot.ps1 then takes over the Administrator workflow.
+      -->
+      <FirstLogonCommands>
+        <SynchronousCommand wcm:action="add">
+          <Order>1</Order>
+          <Description>AGIT Deployment Kit - FirstBoot</Description>
+          <CommandLine>powershell.exe -NoProfile -ExecutionPolicy Bypass -File C:\Deployment\Scripts\FirstBoot.ps1</CommandLine>
+        </SynchronousCommand>
+      </FirstLogonCommands>
     </component>
   </settings>
 </unattend>
