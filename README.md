@@ -18,3 +18,7 @@ Logs are written to:
 ```text
 C:\Windows\Temp\Deployment.log
 ```
+
+## Administrator handoff
+
+AutoLogon is used only as a temporary transition mechanism and is disabled by the deployment.
