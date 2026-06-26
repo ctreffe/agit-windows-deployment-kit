@@ -11,4 +11,4 @@ This repository intentionally starts small and grows in focused steps. The proje
 
 ## Current scope
 
-This stage introduces the unattended Windows installation baseline. Disk selection remains manual by design.
+The project now includes the Windows `$OEM$` deployment path. Files placed below this path are copied to the installed system during Windows Setup.
