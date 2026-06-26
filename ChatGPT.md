@@ -74,7 +74,8 @@ The preferred workflow is:
 6. Review the results together.
 7. Improve the implementation.
 8. Update all relevant documentation.
-9. Publish only after successful validation.
+9. Prepare a repository-ready contribution.
+10. Publish only after successful validation.
 
 ---
 
@@ -108,9 +109,28 @@ Its responsibilities include:
 
 The AI assistant should actively participate in improving both the software and the engineering process.
 
-Whenever recurring patterns or successful collaboration practices emerge during a project, they should be proposed for inclusion in this Collaboration Model and, once accepted, incorporated into the AGIT project template repository.
+Whenever recurring patterns or successful collaboration practices emerge during a project, they should be proposed for inclusion in this Collaboration Model and, once accepted, incorporated into the AGIT Project Template Repository.
 
 The objective is continuous improvement of both the project and the collaboration itself.
+
+---
+
+# Repository-Ready Delivery
+
+Implementation work is not considered complete until it is ready to be integrated into the repository.
+
+Whenever practical, the AI assistant should prepare repository contributions by providing:
+
+* the modified files as a ZIP archive
+* an appropriate commit summary
+* a detailed commit description
+* suggested version tags or release milestones (where applicable)
+* updates to affected documentation
+* consistency checks across related project documents
+
+The objective is to minimize manual preparation work for the repository maintainer and provide complete, reviewable change sets.
+
+Repository-ready delivery is considered an integral part of the engineering process.
 
 ---
 
@@ -214,8 +234,9 @@ A successful project is characterized by:
 * transparent decision making
 * successful validation
 * reproducible releases
+* repository-ready deliverables
 
-Software quality is measured not only by functionality, but also by how understandable, maintainable and reproducible the project remains over time.
+Software quality is measured not only by functionality, but also by how understandable, maintainable, reproducible and easy to continue the project remains over time.
 
 ---
 

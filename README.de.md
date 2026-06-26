@@ -1,30 +1,34 @@
 ﻿# AGIT Deployment Kit
 
-> **KI-Kollaborationshinweis**  
+[![Release](https://img.shields.io/github/v/release/ctreffe/agit-windows-deployment-kit)](https://github.com/ctreffe/agit-windows-deployment-kit/releases)
+[![License](https://img.shields.io/github/license/ctreffe/agit-windows-deployment-kit)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/ctreffe/agit-windows-deployment-kit)](https://github.com/ctreffe/agit-windows-deployment-kit/commits/main)
+![PowerShell](https://img.shields.io/badge/PowerShell-5.1+-5391FE)
+
+🇬🇧 **English documentation:** [README.md](README.md)
+
+> [!NOTE]
+> **KI-Kollaboration**
+>
 > Dieses Projekt wurde in einer iterativen Zusammenarbeit zwischen dem Repository-Maintainer (`ctreffe`) und ChatGPT (OpenAI) konzipiert, entworfen, implementiert und dokumentiert.
+>
+> Der Kollaborationsprozess ist in [ChatGPT.md](ChatGPT.md) als versioniertes Collaboration Model dokumentiert.
+
+**Einmal sauber bauen. Konsistent ausrollen. Alles dokumentieren.**
 
 Version: **1.0.0**  
 Zielsystem: **Windows 11 Enterprise 25H2**  
 Validiertes ISO: `SW_DVD9_Win_Pro_11_25H2.8_64BIT_German_Pro_Ent_EDU_N_MLF_X24-31690`
 
-Das AGIT Deployment Kit ist ein modulares Windows-11-Deployment-Paket, mit dem
-aus einem Installations-USB-Stick ein sauber vorkonfiguriertes lokales
-Administrator-System erstellt wird.
+Das AGIT Deployment Kit ist ein modulares Windows-Deployment-Paket, mit dem aus einem Windows-Installations-USB-Stick ein sauber vorkonfiguriertes lokales Administrator-System erstellt wird.
 
-Version 1.0.0 ist das erste stabile Release des AGIT Deployment Kits.
-Sie basiert auf dem validierten 0.9.0-Release-Candidate, der eine vollständige
-Neuinstallation auf echter Hardware ohne Warnungen oder Fehler abgeschlossen hat.
-Nach dieser Validierung wurden keine absichtlichen Verhaltensänderungen mehr vorgenommen.
+Version 1.0.0 ist das erste stabile Release des AGIT Deployment Kits. Sie basiert auf dem validierten 0.9.0-Release-Candidate, der eine vollständige Neuinstallation auf echter Hardware ohne Warnungen oder Fehler abgeschlossen hat. Nach dieser Validierung wurden keine absichtlichen Verhaltensänderungen mehr vorgenommen.
 
 ## Für wen ist das Kit gedacht?
 
-Das Kit richtet sich an IT-Administrator:innen, die Windows 11 Enterprise von
-einem vertrauenswürdigen Organisations-ISO installieren und vor einem späteren
-AD-, Entra-ID-, Intune- oder sonstigen Management-Beitritt einen vorhersehbaren
-lokalen Ausgangszustand haben möchten.
+Das Kit richtet sich an IT-Administrator:innen, die Windows 11 Enterprise von einem vertrauenswürdigen Organisations-ISO installieren und vor einem späteren AD-, Entra-ID-, Intune- oder sonstigen Management-Beitritt einen vorhersehbaren lokalen Ausgangszustand haben möchten.
 
-Man muss die PowerShell-Interna nicht verstehen, um das Kit zu verwenden. Für
-ein normales Deployment werden hauptsächlich zwei Dateien bearbeitet:
+Man muss die PowerShell-Interna nicht verstehen, um das Kit zu verwenden. Für ein normales Deployment werden hauptsächlich zwei Dateien bearbeitet:
 
 1. `autounattend.xml`
 2. `sources/$OEM$/$1/Deployment/Scripts/Config.ps1`
@@ -59,21 +63,9 @@ Das Kit tut bewusst **nicht** Folgendes:
 - OneDrive-, Teams- oder Copilot-Binaries entfernen;
 - breit angelegte „Debloat“- oder „Privacy-Hardening“-Skripte anwenden.
 
-Ziel ist ein wartbares Administrator-System, keine stark veränderte oder schwer
-supportbare Windows-Installation.
+Ziel ist ein wartbares Administrator-System, keine stark veränderte oder schwer supportbare Windows-Installation.
 
-## Projektprinzipien
-
-- Sicherheit vor Automatisierung.
-- Datenträger- und Partitionsauswahl bleiben manuell.
-- Windows bleibt wartbar und unterstützbar.
-- Bevorzugt werden nachvollziehbare, Microsoft-nahe Richtlinien und Registry-
-  Einstellungen.
-- Defender, SmartScreen, UAC und Windows Update werden nicht deaktiviert.
-- Jedes Modul muss idempotent sein.
-- Jedes Modul schreibt ins Log.
-- Kosmetische Fehler dürfen das Deployment nicht abbrechen.
-- Keine versteckte Magie: wichtige Entscheidungen werden dokumentiert.
+Die technischen Grundsätze hinter diesen Entscheidungen stehen in [PHILOSOPHY.md](PHILOSOPHY.md).
 
 ## Schnellstart
 
@@ -89,6 +81,17 @@ supportbare Windows-Installation.
 7. Deployment durchlaufen lassen.
 8. `C:\Windows\Temp\Deployment.log` prüfen.
 
+> [!IMPORTANT]
+> **Sicherheitshinweise**
+>
+> Der Deployment-Prozess verwendet temporäre lokale Konten und Klartext-Passwörter, um unbeaufsichtigtes Setup und Post-Install-Automatisierung zu ermöglichen.
+>
+> Dieses Deployment Kit ist für verwaltete Umgebungen gedacht, in denen Systeme nach der Installation typischerweise zeitnah einer Active-Directory-Domäne, Entra ID, Intune oder einer vergleichbaren Verwaltungsplattform hinzugefügt werden.
+>
+> In solchen Umgebungen können lokale Konten später durch Organisationsrichtlinien entfernt, deaktiviert, umbenannt oder verwaltet werden. Auch der integrierte Administrator kann per Domänenrichtlinie wieder deaktiviert werden.
+>
+> Wenn das Kit für Standalone-Systeme oder nicht verwaltete Geräte genutzt wird, sollten der Account-Workflow geprüft, alle Platzhalterpasswörter ersetzt und bewusst entschieden werden, ob der lokale Administrator aktiviert bleiben soll.
+
 ## Rufus-Empfehlungen
 
 Rufus sollte so verwendet werden:
@@ -100,9 +103,7 @@ Rufus sollte so verwendet werden:
 | Dateisystem | Rufus entscheiden lassen |
 | Windows-Anpassungen von Rufus | **Alle Häkchen aus** |
 
-Die Windows-Anpassungsoptionen von Rufus können eigene Antwortdatei-Logik
-erzeugen. Das AGIT Deployment Kit sollte die einzige Komponente sein, die das
-Windows-Setup anpasst.
+Die Windows-Anpassungsoptionen von Rufus können eigene Antwortdatei-Logik erzeugen. Das AGIT Deployment Kit sollte die einzige Komponente sein, die das Windows-Setup anpasst.
 
 ## Passwörter
 
@@ -115,23 +116,20 @@ Es gibt zwei Passwörter.
 
 ### SetupPassword
 
-`SetupPassword` wird für den temporären lokalen Benutzer `Setup` verwendet.
-Windows erstellt dieses Konto während OOBE, bevor PowerShell-Skripte verfügbar
-sind. Deshalb muss derselbe Platzhalter in **beiden** Dateien ersetzt werden:
+`SetupPassword` wird für den temporären lokalen Benutzer `Setup` verwendet. Windows erstellt dieses Konto während OOBE, bevor PowerShell-Skripte verfügbar sind.
+
+Deshalb muss derselbe Platzhalter in **beiden** Dateien ersetzt werden:
 
 - `autounattend.xml`
 - `Config.ps1`
 
-Auch wenn der Benutzer `Setup` nur temporär existiert, ist er währenddessen ein
-lokaler Administrator. Platzhalterpasswörter sollten daher nicht produktiv
-verwendet werden.
+Auch wenn der Benutzer `Setup` nur temporär existiert, ist er währenddessen ein lokaler Administrator. Platzhalterpasswörter sollten daher nicht produktiv verwendet werden.
 
 ### AdminPassword
 
-`AdminPassword` wird für den integrierten lokalen `Administrator` verwendet. Das
-ist das Konto, das nach dem Deployment übrig bleibt und für die temporäre lokale
-Administration gedacht ist, bis das Gerät einer Domäne beitritt oder anderweitig
-verwaltet wird.
+`AdminPassword` wird für den integrierten lokalen `Administrator` verwendet.
+
+Das ist das Konto, das nach dem Deployment übrig bleibt und für die temporäre lokale Administration gedacht ist, bis das Gerät einer Domäne beitritt oder anderweitig verwaltet wird.
 
 ## Konfigurationsdatei
 
@@ -143,9 +141,7 @@ sources/$OEM$/$1/Deployment/Scripts/Config.ps1
 
 `$true` aktiviert eine Option, `$false` deaktiviert sie.
 
-Die Konfigurationsdatei enthält bewusst ausführliche Kommentare. Die folgende
-Referenz ist als verständliche Übersicht für Administrator:innen gedacht, die
-nicht direkt den PowerShell-Code lesen möchten.
+Die Konfigurationsdatei enthält bewusst ausführliche Kommentare. Die folgende Referenz ist als verständliche Übersicht für Administrator:innen gedacht, die nicht direkt den PowerShell-Code lesen möchten.
 
 ## Konfigurationsreferenz für Administrator:innen
 
@@ -201,8 +197,9 @@ Das Kit lässt diese Windows-Sicherheitsfunktionen bewusst unverändert:
 
 ### Standardprofil für Administrator-Staging
 
-Die Standardwerte verwenden. Das ist das vorgesehene Profil, um ein Gerät lokal
-vorzubereiten, bevor es AD oder einer anderen Verwaltungsplattform beitritt.
+Die Standardwerte verwenden.
+
+Das ist das vorgesehene Profil, um ein Gerät lokal vorzubereiten, bevor es AD oder einer anderen Verwaltungsplattform beitritt.
 
 ### Näher am Windows-Standard
 
@@ -211,17 +208,15 @@ Wenn das System näher an Windows 11 Standard bleiben soll:
 ```powershell
 ClassicContextMenu = $false
 TaskbarLeftAligned = $false
-ShowHiddenFiles    = $false
+ShowHiddenFiles = $false
 ```
 
 ### Endbenutzerprofil
 
-Das Kit ist nicht primär als Endbenutzer-Image gedacht. Falls es dennoch als
-Basis dafür dient, können administratororientierte Explorer-Einstellungen
-reduziert werden:
+Das Kit ist nicht primär als Endbenutzer-Image gedacht. Falls es dennoch als Basis dafür dient, können administratororientierte Explorer-Einstellungen reduziert werden:
 
 ```powershell
-ShowHiddenFiles    = $false
+ShowHiddenFiles = $false
 ShowFileExtensions = $true
 ExplorerOpenThisPC = $false
 ```
@@ -257,8 +252,7 @@ Log-Level:
 | `WARNING` | Nicht kritisches Problem; Deployment läuft weiter |
 | `ERROR` | Kritisches Problem |
 
-Ein Deployment gilt als erfolgreich, wenn die abschließende Zusammenfassung
-meldet:
+Ein Deployment gilt als erfolgreich, wenn die abschließende Zusammenfassung meldet:
 
 ```text
 Status : SUCCESS
@@ -267,7 +261,9 @@ ERROR  : 0
 
 ## Validierungsbericht
 
-Am Ende führt das Kit einen Selbsttest durch. Es prüft unter anderem:
+Am Ende führt das Kit einen Selbsttest durch.
+
+Es prüft unter anderem:
 
 - integrierter Administrator aktiviert;
 - temporärer Benutzer `Setup` gelöscht;
@@ -276,8 +272,7 @@ Am Ende führt das Kit einen Selbsttest durch. Es prüft unter anderem:
 - klassisches Kontextmenü;
 - OneDrive-, Copilot- und Telemetrie-Policy-Werte.
 
-Die Validierung dient als schneller operativer Plausibilitätscheck. Sie ersetzt
-keine administrative Endkontrolle, bevor ein Gerät übergeben wird.
+Die Validierung dient als schneller operativer Plausibilitätscheck. Sie ersetzt keine administrative Endkontrolle, bevor ein Gerät übergeben wird.
 
 ## Enthaltene Module
 
@@ -302,25 +297,24 @@ C:\Windows\Temp\Deployment.log
 ```
 
 Wenn das Log nicht existiert, wurde `FirstBoot.ps1` vermutlich nicht gestartet.
-Prüfe, ob der USB-Stick den Ordner `sources/$OEM$/$1/Deployment/Scripts`
-enthält und ob `FirstLogonCommands` in `autounattend.xml` auf den richtigen
-Skriptpfad zeigt.
+
+Prüfe, ob der USB-Stick den Ordner `sources/$OEM$/$1/Deployment/Scripts` enthält und ob `FirstLogonCommands` in `autounattend.xml` auf den richtigen Skriptpfad zeigt.
 
 ### Im Log steht eine WARNING
 
-Warnings sind nicht kritisch. Häufig bedeutet das nur, dass eine kosmetische
-Änderung nicht sofort sichtbar aktualisiert werden konnte und nach der nächsten
-Anmeldung greift.
+Warnings sind nicht kritisch. Häufig bedeutet das nur, dass eine kosmetische Änderung nicht sofort sichtbar aktualisiert werden konnte und nach der nächsten Anmeldung greift.
 
 ### Taskleiste oder Explorer aktualisieren sich nicht sofort
 
-Einige Shell-Einstellungen benötigen einen Explorer-Neustart oder eine neue
-Anmeldung. Der Registry-Wert kann bereits korrekt sein, auch wenn die sichtbare
-Oberfläche später aktualisiert wird.
+Einige Shell-Einstellungen benötigen einen Explorer-Neustart oder eine neue Anmeldung.
+
+Der Registry-Wert kann bereits korrekt sein, auch wenn die sichtbare Oberfläche später aktualisiert wird.
 
 ### Windows fragt nach Sprache, Tastatur oder Konto
 
-Dann wurde die Antwortdatei vermutlich nicht wie erwartet verarbeitet. Prüfe:
+Dann wurde die Antwortdatei vermutlich nicht wie erwartet verarbeitet.
+
+Prüfe:
 
 - `autounattend.xml` liegt im Root des USB-Sticks;
 - Rufus-Windows-Anpassungen wurden nicht genutzt;
@@ -334,16 +328,22 @@ Dann wurde die Antwortdatei vermutlich nicht wie erwartet verarbeitet. Prüfe:
 - SmartScreen bleibt unverändert.
 - UAC bleibt unverändert.
 - BitLocker wird nicht entfernt; nur automatische Geräteverschlüsselung wird verhindert.
-- OneDrive und Copilot werden über Policy-artige Registry-Werte deaktiviert,
-  nicht durch Löschen von Systemkomponenten.
-- Passwörter stehen im Klartext auf dem USB-Stick. Der Stick ist daher als
-  sensibles Administrationsmedium zu behandeln.
+- OneDrive und Copilot werden über Policy-artige Registry-Werte deaktiviert, nicht durch Löschen von Systemkomponenten.
+- Passwörter stehen im Klartext auf dem USB-Stick. Der Stick ist daher als sensibles Administrationsmedium zu behandeln.
+
+## Projektdokumentation
+
+| Dokument | Zweck |
+| --- | --- |
+| [README.md](README.md) | Primäre Benutzerdokumentation auf Englisch |
+| [README.de.md](README.de.md) | Deutsche Übersetzung der Benutzerdokumentation |
+| [PHILOSOPHY.md](PHILOSOPHY.md) | Projektprinzipien und Engineering-Philosophie |
+| [ChatGPT.md](ChatGPT.md) | Versioniertes Collaboration Model |
+| [CHANGELOG.md](CHANGELOG.md) | Versionshistorie |
+| [RELEASE.md](RELEASE.md) | Release Notes des stabilen Releases |
 
 ## Release-Status
 
-Version 1.0.0 ist das erste stabile Release des AGIT Deployment Kits. Sie basiert
-auf dem validierten 0.9.0-Release-Candidate und enthält nach dem finalen
-erfolgreichen Hardwaretest keine absichtlichen Verhaltensänderungen mehr.
+Version 1.0.0 ist das erste stabile Release des AGIT Deployment Kits.
 
-Details zum Release stehen in `RELEASE.md`. Die Projektprinzipien stehen in
-`PHILOSOPHY.md`.
+Sie basiert auf dem validierten 0.9.0-Release-Candidate und enthält nach dem finalen erfolgreichen Hardwaretest keine absichtlichen Verhaltensänderungen mehr.
