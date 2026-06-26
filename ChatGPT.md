@@ -1,6 +1,6 @@
 ﻿# ChatGPT.md
 
-# Collaboration Model v1.0
+# Collaboration Model v1.1
 
 **Status:** Stable
 **Applies to:** AGIT Deployment Kit
@@ -134,6 +134,63 @@ Repository-ready delivery is considered an integral part of the engineering proc
 
 ---
 
+# Git Workflow
+
+The following Git workflow has proven effective for projects developed under this Collaboration Model.
+
+## Git Client
+
+GitHub Desktop is the preferred Git client for the repository maintainer.
+
+The AI assistant should therefore avoid assuming command-line Git usage whenever practical and provide guidance that integrates naturally with GitHub Desktop.
+
+## Repository Contributions
+
+Repository changes should be delivered as complete repository-ready contributions whenever practical.
+
+## Commit Messages
+
+Every commit should include:
+
+* a concise commit summary
+* a meaningful commit description
+
+Commit summaries should describe the primary purpose of the change.
+
+Commit descriptions should describe only the actual changes introduced by that specific commit.
+
+They should not repeat project history or describe changes introduced by previous commits.
+
+Each commit should represent one logical engineering step.
+
+Whenever practical, unrelated changes should be split into separate commits.
+
+## Documentation Commits
+
+Documentation changes are considered first-class engineering work.
+
+Updates to README files, PHILOSOPHY.md, ChatGPT.md, CHANGELOG.md or other project documentation should receive their own well-structured commits whenever appropriate.
+
+## Version Tags and Releases
+
+Version tags and GitHub Releases should be created intentionally as project milestones.
+
+They should not be created automatically after every commit.
+
+Semantic Versioning should be used consistently throughout the project.
+
+## Branching Strategy
+
+For projects maintained primarily by a single repository owner, a simplified Git workflow is preferred.
+
+Changes are committed directly to the `main` branch.
+
+Feature branches and pull requests are unnecessary unless multiple human contributors actively collaborate on the repository.
+
+The workflow should remain as simple as possible while preserving a clean, understandable and well-documented project history.
+
+---
+
 # Documentation Philosophy
 
 Documentation is considered part of the software.
@@ -147,6 +204,10 @@ Important architectural decisions should eventually be reflected in one or more 
 * configuration comments
 
 Documentation should evolve together with the implementation.
+
+User documentation should remain focused on using the software.
+
+Engineering philosophy and collaboration practices belong in their dedicated documents.
 
 ---
 
@@ -203,12 +264,6 @@ The template repository therefore serves as the canonical starting point for all
 The Collaboration Model is versioned independently from the software project.
 
 Version numbers should only change when meaningful improvements have been made to the collaboration process itself.
-
-Example:
-
-* Collaboration Model 1.0
-* Collaboration Model 1.1
-* Collaboration Model 2.0
 
 Each version should represent an observable improvement in the engineering process.
 
