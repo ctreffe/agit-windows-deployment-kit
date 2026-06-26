@@ -1,0 +1,15 @@
+﻿# Windows
+Thumbs.db
+Desktop.ini
+
+# Editor and IDE metadata
+.vscode/
+.idea/
+
+# Deployment logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# PowerShell local user files
+*.psd1.user
