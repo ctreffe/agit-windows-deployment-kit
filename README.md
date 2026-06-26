@@ -11,14 +11,4 @@ This repository intentionally starts small and grows in focused steps. The proje
 
 ## Current scope
 
-The deployment now includes structured logging and a hardened Administrator handoff workflow.
-
-Logs are written to:
-
-```text
-C:\Windows\Temp\Deployment.log
-```
-
-## Administrator handoff
-
-AutoLogon is used only as a temporary transition mechanism and is disabled by the deployment.
+The project now includes modular Windows configuration scripts for Explorer, shell behavior, Microsoft defaults, privacy, security and validation.
