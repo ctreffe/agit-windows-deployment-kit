@@ -1,0 +1,17 @@
+﻿{
+  "name": "AGIT Deployment Kit",
+  "version": "1.0.0",
+  "target": "Windows 11 Enterprise 25H2",
+  "repository": "agit-windows-deployment-kit",
+  "maintainer": "ctreffe",
+  "ai_collaboration": "Designed and developed through iterative collaboration with ChatGPT (OpenAI).",
+  "modules": [
+    "Explorer",
+    "Taskbar",
+    "ContextMenu",
+    "Microsoft",
+    "Privacy",
+    "Security",
+    "Validation"
+  ]
+}
